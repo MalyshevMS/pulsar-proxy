@@ -1,0 +1,31 @@
+{
+  "name": "pulsar-proxy",
+  "version": "1.0.0",
+  "description": "simple ws-tcp proxy",
+  "main": "proxy.js",
+  "scripts": {
+    "proxy": "node proxy.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MalyshevMS/pulsar-proxy.git"
+  },
+  "keywords": [
+    "proxy",
+    "websocket",
+    "tcp",
+    "js",
+    "nodejs",
+    "node",
+    "npm"
+  ],
+  "author": "MalyshevMS",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/MalyshevMS/pulsar-proxy/issues"
+  },
+  "homepage": "https://github.com/MalyshevMS/pulsar-proxy#readme",
+  "dependencies": {
+    "ws": "^8.19.0"
+  }
+}
