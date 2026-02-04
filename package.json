@@ -3,8 +3,12 @@
   "version": "1.0.0",
   "description": "simple ws-tcp proxy",
   "main": "proxy.js",
+  "bin": {
+    "pulsar-proxy": "./proxy.js"
+  },
   "scripts": {
-    "proxy": "node proxy.js"
+    "proxy": "node proxy.js",
+    "proxy:wss": "node proxy.js --tls"
   },
   "repository": {
     "type": "git",
@@ -25,6 +29,7 @@
     "url": "https://github.com/MalyshevMS/pulsar-proxy/issues"
   },
   "homepage": "https://github.com/MalyshevMS/pulsar-proxy#readme",
+  "files": ["proxy.js"],
   "dependencies": {
     "ws": "^8.19.0"
   }

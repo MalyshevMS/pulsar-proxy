@@ -1,5 +1,7 @@
+#!/usr/bin/env node
 const net = require('net');
 const http = require('http');
+const https = require('https');
 const WebSocket = require('ws');
 const fs = require('fs')
 
@@ -7,7 +9,35 @@ const WS_PORT = 8080;
 const TCP_PORT = 4171;
 const TCP_HOST = '127.0.0.1';
 
-const server = http.createServer();
+function getArgValue(flag) {
+    const ix = process.argv.findIndex(a => a === flag || a.startsWith(flag + '='));
+    if (ix === -1) return undefined;
+    const val = process.argv[ix];
+    if (val.includes('=')) return val.split('=')[1];
+    return process.argv[ix + 1];
+}
+
+const useTls = process.argv.includes('--tls') || process.argv.includes('--wss') || process.env.WSS === '1';
+
+let server;
+if (useTls) {
+    const keyPath = getArgValue('--key') || process.env.WSS_KEY || './key.pem';
+    const certPath = getArgValue('--cert') || process.env.WSS_CERT || './cert.pem';
+
+    let key, cert;
+    try {
+        key = fs.readFileSync(keyPath);
+        cert = fs.readFileSync(certPath);
+    } catch (err) {
+        console.error(`TLS enabled but failed to read key/cert:\n key: ${keyPath}\n cert: ${certPath}\n`, err.message);
+        process.exit(1);
+    }
+
+    server = https.createServer({ key, cert });
+} else {
+    server = http.createServer();
+}
+
 const wss = new WebSocket.Server({ server });
 
 const log = fs.createWriteStream('./proxy.log', {
@@ -37,13 +67,13 @@ wss.on('connection', (ws) => {
 
     // Browser -> TCP server
     ws.on('message', (data) => {
-        dump('WS -> TCP', data);
+        // dump('WS -> TCP', data);
         tcp.write(data);
     });
 
     // TCP server -> Browser
     tcp.on('data', (data) => {
-        dump('TCP -> WS');
+        // dump('TCP -> WS');
         ws.send(data);
     });
 
@@ -59,7 +89,8 @@ wss.on('connection', (ws) => {
 });
 
 server.listen(WS_PORT, () => {
-    console.log(`WS -> TCP proxy :${WS_PORT} -> ${TCP_HOST}:${TCP_PORT}`);
+    const proto = useTls ? 'WSS' : 'WS';
+    console.log(`${proto} -> TCP proxy :${WS_PORT} -> ${TCP_HOST}:${TCP_PORT}`);
 });
 
 process.on('SIGINT', () => {
