@@ -67,13 +67,13 @@ wss.on('connection', (ws) => {
 
     // Browser -> TCP server
     ws.on('message', (data) => {
-        // dump('WS -> TCP', data);
+        dump('WS -> TCP', data);
         tcp.write(data);
     });
 
     // TCP server -> Browser
     tcp.on('data', (data) => {
-        // dump('TCP -> WS');
+        dump('TCP -> WS', data);
         ws.send(data);
     });
 

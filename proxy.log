@@ -1,6 +1,0 @@
-[WS -> TCP] 4 bytes
-ping
-
-[WS -> TCP] 100 bytes
-0000000000000000000017699368713                             @ra                     !server.req!ping
-
